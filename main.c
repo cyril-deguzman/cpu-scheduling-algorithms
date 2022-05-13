@@ -1,5 +1,5 @@
 #include <stdio.h>
-
+#include "algo.h"
 /**
     X = what algo
     Y = how many processes
