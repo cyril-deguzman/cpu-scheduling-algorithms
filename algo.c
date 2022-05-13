@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "algo.h"
 #include "struct.h"
 
