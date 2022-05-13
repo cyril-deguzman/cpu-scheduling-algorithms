@@ -1,4 +1,3 @@
-#include "struct.h"
 
 void FirstComeFirstServe(int num, int A[], int B[], int C[]);
 
