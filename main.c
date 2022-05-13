@@ -13,9 +13,12 @@
 int main(void) {
     char file[20];
     int X, Y, Z;
-    int A[100], B[100], C[100]; //Y CAN BA BE 3-100 ACCORDING TO SPECS SO ABC MAY BE UP TO 100
     int i;
     
+    Process p[100];
+    Process *process_ptr = NULL;
+    process_ptr = p;
+
     printf("Enter file name: ");
     scanf("%s", file);
     
@@ -27,16 +30,17 @@ int main(void) {
 
     fscanf(ptr,"%d %d %d", &X,&Y,&Z);
 
-    for (i = 0; i < Y; ++i)
+    for (i = 0; i < Y; i++)
     {
-        fscanf(ptr,"%d %d %d", &A[i],&B[i],&C[i]);
+        fscanf(ptr,"%d %d %d", &process_ptr->id, &process_ptr->arrival, &process_ptr->burst);
+        process_ptr++;
     }
     
     switch(X){
-        case 0: FirstComeFirstServe(Y,A,B,C); break;
-        case 1: ShortJobFirst(A,B,C); break;
-        case 2: ShortRemainTimeFirst(A,B,C); break;
-        case 3: RoundRobin(A,B,C); break;
+        case 0: FirstComeFirstServe(Y, p); break;
+        case 1: ShortJobFirst(Y, p); break;
+        case 2: ShortRemainTimeFirst(p); break;
+        case 3: RoundRobin(p); break;
     }
   //printf("Hello World\n");
   return 0;

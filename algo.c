@@ -1,18 +1,17 @@
 #include <stdio.h>
 #include "algo.h"
-#include "struct.h"
 
-void FirstComeFirstServe(int num, int A[], int B[], int C[]){
+void FirstComeFirstServe(int num, Process p[]){
     int count = 0, total = 0, i, start = 0, wait = 0, end = 0;
     float ave = 0;
 
     printf("\n:::::::FIRST COME FIRST SERVE:::::::\n\n");
     
-    for(i = 0; i < num; ++i){
+    for(i = 0; i < num; i++){
         
-        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", A[i], start, C[i] + end, wait);
+        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", p[i].id, start, p[i].burst + end, wait);
         
-        end = C[i] + wait;
+        end = p[i].burst + wait;
         start = end;
         ave = ave + wait;
         wait = end;
@@ -22,15 +21,36 @@ void FirstComeFirstServe(int num, int A[], int B[], int C[]){
 
 }
 
-void ShortJobFirst(int A[], int B[], int C[]){
+void ShortJobFirst(int num, Process p[]){
+    int i = 0;
     printf("\n:::::::SHORTEST JOB FIRST:::::::\n\n");
+    SortBurst(p, num);
+    FirstComeFirstServe(num, p);
     
+    for(i; i < num; i++) {
+      printf("%d %d %d", p[i].id, p[i].arrival, p[i].burst);
+    }
 }
 
-void ShortRemainTimeFirst(int A[], int B[], int C[]){
+void ShortRemainTimeFirst(Process p[]){
     printf("\n:::::::SHORTEST REMAINING TIME FIRST:::::::\n\n");
 }
 
-void RoundRobin(int A[], int B[], int C[]){
+void RoundRobin(Process p[]){
     printf("\n:::::::ROUND ROBIN:::::::\n\n");
+}
+
+void SortBurst(Process p[], int num){
+    int i, j;
+
+    for(i = 0; i < num; i++)
+      for(j = i+1; j < num; j++) 
+        if(p[i].burst > p[j].burst)
+          Swap(&p[i], &p[j]); 
+}
+
+void Swap(Process *x, Process *y) {
+    Process temp = *x;
+    *x = *y;
+    *y = temp;
 }

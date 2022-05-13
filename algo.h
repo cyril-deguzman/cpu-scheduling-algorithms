@@ -1,8 +1,20 @@
+typedef struct process
+{
+  int id;
+  int arrival;
+  int burst;
+  int start;
+  int wait;
+} Process;
 
-void FirstComeFirstServe(int num, int A[], int B[], int C[]);
+void FirstComeFirstServe(int, Process[]);
 
-void ShortJobFirst(int A[], int B[], int C[]);
+void ShortJobFirst(int, Process[]);
 
-void ShortRemainTimeFirst(int A[], int B[], int C[]);
+void ShortRemainTimeFirst(Process[]);
 
-void RoundRobin(int A[], int B[], int C[]);
+void RoundRobin(Process[]);
+
+void SortBurst(Process[], int);
+
+void Swap(Process*, Process*);
