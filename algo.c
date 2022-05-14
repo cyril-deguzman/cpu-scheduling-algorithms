@@ -4,8 +4,6 @@
 void FirstComeFirstServe(int num, Process p[]){
     int count = 0, total = 0, i, start = 0, wait = 0, end = 0;
     float ave = 0;
-
-    printf("\n:::::::FIRST COME FIRST SERVE:::::::\n\n");
     
     for(i = 0; i < num; i++){
         
@@ -23,7 +21,7 @@ void FirstComeFirstServe(int num, Process p[]){
 
 void ShortJobFirst(int num, Process p[]){
     int i = 0;
-    printf("\n:::::::SHORTEST JOB FIRST:::::::\n\n");
+
     SortBurst(p, num);
     FirstComeFirstServe(num, p);
     
@@ -33,11 +31,11 @@ void ShortJobFirst(int num, Process p[]){
 }
 
 void ShortRemainTimeFirst(Process p[]){
-    printf("\n:::::::SHORTEST REMAINING TIME FIRST:::::::\n\n");
+     
 }
 
 void RoundRobin(Process p[]){
-    printf("\n:::::::ROUND ROBIN:::::::\n\n");
+    
 }
 
 void SortBurst(Process p[], int num){
