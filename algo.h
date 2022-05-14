@@ -5,13 +5,14 @@ typedef struct process
   int burst;
   int start;
   int wait;
+  int end;
 } Process;
 
 void FirstComeFirstServe(int, Process[]);
 
 void ShortJobFirst(int, Process[]);
 
-void ShortRemainTimeFirst(Process[]);
+void ShortRemainTimeFirst(int, Process[]);
 
 void RoundRobin(Process[]);
 

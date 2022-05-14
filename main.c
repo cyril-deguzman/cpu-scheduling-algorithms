@@ -33,13 +33,14 @@ int main(void) {
     for (i = 0; i < Y; i++)
     {
         fscanf(ptr,"%d %d %d", &process_ptr->id, &process_ptr->arrival, &process_ptr->burst);
+        process_ptr->end = 0;
         process_ptr++;
     }
     
     switch(X){
         case 0: FirstComeFirstServe(Y, p); break;
         case 1: ShortJobFirst(Y, p); break;
-        case 2: ShortRemainTimeFirst(p); break;
+        case 2: ShortRemainTimeFirst(Y, p); break;
         case 3: RoundRobin(p); break;
     }
   //printf("Hello World\n");
