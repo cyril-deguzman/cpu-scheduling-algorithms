@@ -38,10 +38,17 @@ int main(void) {
     }
     
     switch(X){
-        case 0: FirstComeFirstServe(Y, p); break;
-        case 1: ShortJobFirst(Y, p); break;
-        case 2: ShortRemainTimeFirst(Y, p); break;
-        case 3: RoundRobin(p); break;
+        case 0: printf("\n:::::::FIRST COME FIRST SERVE:::::::\n\n");
+                FirstComeFirstServe(Y, p); break;
+
+        case 1: printf("\n:::::::SHORTEST JOB FIRST:::::::\n\n");
+                ShortJobFirst(Y, p); break;
+
+        case 2: printf("\n:::::::SHORTEST REMAINING TIME FIRST:::::::\n\n");
+                ShortRemainTimeFirst(Y, p); break;
+
+        case 3: printf("\n:::::::ROUND ROBIN:::::::\n\n");
+                RoundRobin(p); break;
     }
   //printf("Hello World\n");
   return 0;
