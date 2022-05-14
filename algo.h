@@ -17,4 +17,6 @@ void RoundRobin(Process[]);
 
 void SortBurst(Process[], int);
 
+void SortArrival(Process[], int);
+
 void Swap(Process*, Process*);

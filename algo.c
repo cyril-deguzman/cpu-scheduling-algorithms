@@ -23,6 +23,7 @@ void ShortJobFirst(int num, Process p[]){
     int i = 0;
 
     SortBurst(p, num);
+    SortArrival(p,num);
     FirstComeFirstServe(num, p);
     
     for(i; i < num; i++) {
@@ -31,7 +32,7 @@ void ShortJobFirst(int num, Process p[]){
 }
 
 void ShortRemainTimeFirst(Process p[]){
-     
+
 }
 
 void RoundRobin(Process p[]){
@@ -44,6 +45,15 @@ void SortBurst(Process p[], int num){
     for(i = 0; i < num; i++)
       for(j = i+1; j < num; j++) 
         if(p[i].burst > p[j].burst)
+          Swap(&p[i], &p[j]); 
+}
+
+void SortArrival(Process p[], int num){
+    int i, j;
+
+    for(i = 0; i < num; i++)
+      for(j = i+1; j < num; j++) 
+        if(p[i].arrival > p[j].arrival)
           Swap(&p[i], &p[j]); 
 }
 
