@@ -48,7 +48,8 @@ int main(void) {
                 ShortRemainTimeFirst(Y, p); break;
 
         case 3: printf("\n:::::::ROUND ROBIN:::::::\n\n");
-                RoundRobin(p); break;
+                SortArrival(p, Y);
+                RoundRobin(Y, Z, p); break;
     }
   //printf("Hello World\n");
   return 0;

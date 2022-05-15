@@ -84,8 +84,69 @@ void ShortRemainTimeFirst(int num, Process p[]){
     }
 }
 
-void RoundRobin(Process p[]){
-    
+void RoundRobin(int num, int q, Process p[]){
+    const int SENTINEL = 999;
+    int i, hasExecuted = 0;
+    int q_check = 0;
+    int time = 0;
+    int isDone = 0;
+    int handler_idx = 0;
+    int curr_idx = 0;
+    Process *handler = malloc(num * sizeof(*handler));
+
+    while(!isDone) {
+      // add to handler those who arrived at current time
+      if(handler_idx < num) 
+        for(i = 0; i < num; i++) 
+          if(time == p[i].arrival) 
+          {
+            handler[handler_idx] = p[i];
+            handler_idx++;
+          }
+      
+      if(handler_idx - hasExecuted) 
+      { 
+        // check burst of curr_idx
+        while(handler[curr_idx].burst == SENTINEL) {
+          printf("curr_idx: %d burst: %d\n", curr_idx, handler[curr_idx].burst);
+          Traverse(&curr_idx, &handler_idx, &q_check);
+        }
+          
+          
+        // decrement burst
+        if(q_check < q) {
+
+          handler[curr_idx].burst--;
+          printf("pid: %d burst: %d\n", handler[curr_idx].id, handler[curr_idx].burst);
+          HandleZero(&handler[curr_idx], &hasExecuted);
+
+        } else if(q_check == q) {
+          Traverse(&curr_idx, &handler_idx, &q_check);
+
+          while(handler[curr_idx].burst == SENTINEL) {
+            printf("2: curr_idx: %d burst: %d\n", curr_idx, handler[curr_idx].burst);
+            Traverse(&curr_idx, &handler_idx, &q_check);
+          }
+
+          handler[curr_idx].burst--;
+          printf("pid: %d burst: %d\n", handler[curr_idx].id, handler[curr_idx].burst);
+          HandleZero(&handler[curr_idx], &hasExecuted);
+        } 
+        
+        // inc q_check
+        q_check++;
+
+        // add wait time
+        for(i = 0; i < handler_idx; i++)
+          if(curr_idx != i && handler[i].burst != SENTINEL)
+            handler[i].wait++;
+      }
+      
+      if(hasExecuted == num)
+        isDone = 1;
+
+      time++;
+    }
 }
 
 void SortBurst(Process p[], int num){
@@ -110,4 +171,22 @@ void Swap(Process *x, Process *y) {
     Process temp = *x;
     *x = *y;
     *y = temp;
+}
+
+void Traverse(int* curr_idx, int* handler_idx, int* q_check) {
+  *curr_idx+= 1;
+
+  if(*curr_idx >= *handler_idx)
+    *curr_idx = 0;
+  
+  *q_check = 0;
+}
+
+void HandleZero(Process *p, int* hasExecuted) {
+  const int SENTINEL = 999;
+  
+  if((*p).burst == 0) {
+    (*p).burst = SENTINEL;
+    *hasExecuted+= 1;
+  }
 }

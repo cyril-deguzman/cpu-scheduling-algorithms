@@ -14,10 +14,14 @@ void ShortJobFirst(int, Process[]);
 
 void ShortRemainTimeFirst(int, Process[]);
 
-void RoundRobin(Process[]);
+void RoundRobin(int, int, Process[]);
 
 void SortBurst(Process[], int);
 
 void SortArrival(Process[], int);
 
 void Swap(Process*, Process*);
+
+void HandleZero(Process*, int*);
+
+void Traverse(int*, int*, int*);
