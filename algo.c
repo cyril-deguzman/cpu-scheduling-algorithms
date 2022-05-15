@@ -6,6 +6,8 @@ void FirstComeFirstServe(int num, Process p[]){
     int count = 0, total = 0, i, start = 0, wait = 0, end = 0;
     float ave = 0;
     
+    SortArrival(p, num);
+
     for(i = 0; i < num; i++){
         while(p[i].arrival > start)
           start++;
@@ -22,10 +24,7 @@ void FirstComeFirstServe(int num, Process p[]){
 }
 
 void ShortJobFirst(int num, Process p[]){
-    int i = 0;
-
     SortBurst(p, num);
-    SortArrival(p,num);
     FirstComeFirstServe(num, p);
 }
 
