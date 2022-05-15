@@ -7,17 +7,18 @@ void FirstComeFirstServe(int num, Process p[]){
     float ave = 0;
     
     for(i = 0; i < num; i++){
+        while(p[i].arrival > start)
+          start++;
         
-        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", p[i].id, start, p[i].burst + end, wait);
-        
-        end = p[i].burst + wait;
+        end = p[i].burst + start;
+        wait = (end-p[i].arrival)-p[i].burst;
+        ave += wait;
+        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", p[i].id, start, p[i].burst + start, wait);
+
         start = end;
-        ave = ave + wait;
-        wait = end;
     }
     ave = ave / num;
     printf("Average Wait Time: %.1f", ave);
-
 }
 
 void ShortJobFirst(int num, Process p[]){
@@ -26,15 +27,11 @@ void ShortJobFirst(int num, Process p[]){
     SortBurst(p, num);
     SortArrival(p,num);
     FirstComeFirstServe(num, p);
-    
-    for(i; i < num; i++) {
-      printf("\n%d", p[i].end);
-    }
 }
 
 void ShortRemainTimeFirst(int num, Process p[]){
     const int SENTINEL = 999;
-    int i, j;
+    int i, hasExecuted = 0;
     int time = 0;
     int isDone = 0;
     int handler_idx = 0;
@@ -51,50 +48,45 @@ void ShortRemainTimeFirst(int num, Process p[]){
           {
             handler[handler_idx] = p[i];
             handler_idx++;
-
-            if(handler_idx == 1)
-              start_time = time;
           }
       
-      if(handler_idx) 
+      if(handler_idx - hasExecuted) 
       {
         // get shortest remaining time in handler by comparing burst times
+        int temp = shortest_idx;
+        int hasDisplayed = 0;
         for(i = 0; i < handler_idx; i++)
-          if(handler[shortest_idx].burst > handler[i].burst && handler[i].burst != 0){
-          	end_time = time;
-
-            if(start_time != end_time)
-          		printf("P[%d] Start Time: %d End time: %d | Accumulated Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time, handler[shortest_idx].wait);
-
-            start_time = end_time;
+          if(handler[shortest_idx].burst > handler[i].burst && handler[i].burst != 0) {
             shortest_idx = i;
+            if(temp != shortest_idx && handler[temp].burst != SENTINEL && !hasDisplayed) {
+              printf("P[%d] Start Time: %d End time: %d\n", handler[temp].id, start_time, time);
+              hasDisplayed = 1;
+            }
+            start_time = time;
           }
-            
-        
+          
         // decrease burst of shortest
         handler[shortest_idx].burst--;
-        if(handler[shortest_idx].burst == 0)
+        if(handler[shortest_idx].burst == 0) {
+          hasExecuted++;
+          printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", handler[shortest_idx].id, start_time, time + 1, handler[shortest_idx].wait);
           handler[shortest_idx].burst = SENTINEL;
-        
+        }
+          
         // add wait time
         for(i = 0; i < handler_idx; i++)
           if(shortest_idx != i && handler[i].burst != SENTINEL)
             handler[i].wait++;
-      }
-
-      // check if all processes are done executing
-      if(handler_idx == num)
-        for(i = 0, j = 0; i < num; i++)
-          if(handler[i].burst == SENTINEL)
-            j++;
+      } 
+      else 
+        start_time++;
       
-      if(j == num){
-        printf("P[%d] Start Time: %d End time: %d | Accumulated Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time + p[shortest_idx].burst, handler[shortest_idx].wait);
+      // check if all processes are done executing
+      if(hasExecuted == num)
       	isDone = 1;
-      }
-
+      
       time++;
-    }
+    } 
     for(i = 0; i < handler_idx; i++)
       ave+=handler[i].wait;    
     
@@ -110,7 +102,7 @@ void RoundRobin(int num, int q, Process p[]){
     int isDone = 0;
     int handler_idx = 0;
     int curr_idx = 0;
-    int ave = 0;
+    float ave = 0;
     Process *handler = malloc(num * sizeof(*handler));
 
     while(!isDone) {
@@ -121,9 +113,6 @@ void RoundRobin(int num, int q, Process p[]){
           {
             handler[handler_idx] = p[i];
             handler_idx++;
-
-            if(handler_idx == 1)
-              start_time = time;
           }
       
       if(handler_idx - hasExecuted) 
@@ -158,7 +147,9 @@ void RoundRobin(int num, int q, Process p[]){
           if(curr_idx != i && handler[i].burst != SENTINEL)
             handler[i].wait++;
       }
-      
+      else 
+        start_time++;
+
       if(hasExecuted == num)
         isDone = 1;
 
