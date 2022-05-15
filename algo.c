@@ -40,6 +40,9 @@ void ShortRemainTimeFirst(int num, Process p[]){
     int handler_idx = 0;
     int shortest_idx = 0;
     Process *handler = malloc(num * sizeof(*handler));
+    int start_time = 0, end_time = 0, wait = 0;
+	  int count = 0;
+	  float ave = 0;
 
     while(!isDone) {
       // add to handler those who arrived at current time
@@ -55,19 +58,29 @@ void ShortRemainTimeFirst(int num, Process p[]){
       {
         // get shortest remaining time in handler by comparing burst times
         for(i = 0; i < handler_idx; i++)
-          if(handler[shortest_idx].burst > handler[i].burst && handler[i].burst != 0)
+          if(handler[shortest_idx].burst > handler[i].burst && handler[i].burst != 0){
+            wait = end_time;
+          	end_time = time;
+
+            if(start_time != end_time){
+          		printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time, handler[shortest_idx].wait);
+          		ave = ave + handler[shortest_idx].wait;
+          		count++;
+				    }
+
+            start_time = end_time;
             shortest_idx = i;
+          }
+            
         
         // decrease burst of shortest
         handler[shortest_idx].burst--;
         if(handler[shortest_idx].burst == 0)
           handler[shortest_idx].burst = SENTINEL;
-
-        printf("time: %d pid: %d burst: %d \n", time, handler[shortest_idx].id, handler[shortest_idx].burst);
         
         // add wait time
         for(i = 0; i < handler_idx; i++)
-          if(shortest_idx != i)
+          if(shortest_idx != i && handler[i].burst != SENTINEL)
             handler[i].wait++;
       }
 
@@ -77,11 +90,17 @@ void ShortRemainTimeFirst(int num, Process p[]){
           if(handler[i].burst == SENTINEL)
             j++;
       
-      if(j == num)
-        isDone = 1;
+      if(j == num){
+        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time + p[shortest_idx].burst, handler[shortest_idx].wait);
+      	ave = ave + handler[shortest_idx].wait;
+      	count++;
+      	isDone = 1;
+      }
 
       time++;
     }
+
+    printf("Average Wait Time: %.1f\n", ave/num);
 }
 
 void RoundRobin(int num, int q, Process p[]){

@@ -34,6 +34,7 @@ int main(void) {
     {
         fscanf(ptr,"%d %d %d", &process_ptr->id, &process_ptr->arrival, &process_ptr->burst);
         process_ptr->end = 0;
+        process_ptr->wait = 0;
         process_ptr++;
     }
     
