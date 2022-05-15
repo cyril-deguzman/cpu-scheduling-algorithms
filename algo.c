@@ -39,10 +39,9 @@ void ShortRemainTimeFirst(int num, Process p[]){
     int isDone = 0;
     int handler_idx = 0;
     int shortest_idx = 0;
-    Process *handler = malloc(num * sizeof(*handler));
-    int start_time = 0, end_time = 0, wait = 0;
-	  int count = 0;
+    int start_time = 0, end_time = 0;
 	  float ave = 0;
+    Process *handler = malloc(num * sizeof(*handler));
 
     while(!isDone) {
       // add to handler those who arrived at current time
@@ -52,6 +51,9 @@ void ShortRemainTimeFirst(int num, Process p[]){
           {
             handler[handler_idx] = p[i];
             handler_idx++;
+
+            if(handler_idx == 1)
+              start_time = time;
           }
       
       if(handler_idx) 
@@ -59,14 +61,10 @@ void ShortRemainTimeFirst(int num, Process p[]){
         // get shortest remaining time in handler by comparing burst times
         for(i = 0; i < handler_idx; i++)
           if(handler[shortest_idx].burst > handler[i].burst && handler[i].burst != 0){
-            wait = end_time;
           	end_time = time;
 
-            if(start_time != end_time){
-          		printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time, handler[shortest_idx].wait);
-          		ave = ave + handler[shortest_idx].wait;
-          		count++;
-				    }
+            if(start_time != end_time)
+          		printf("P[%d] Start Time: %d End time: %d | Accumulated Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time, handler[shortest_idx].wait);
 
             start_time = end_time;
             shortest_idx = i;
@@ -91,15 +89,15 @@ void ShortRemainTimeFirst(int num, Process p[]){
             j++;
       
       if(j == num){
-        printf("P[%d] Start Time: %d End time: %d | Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time + p[shortest_idx].burst, handler[shortest_idx].wait);
-      	ave = ave + handler[shortest_idx].wait;
-      	count++;
+        printf("P[%d] Start Time: %d End time: %d | Accumulated Waiting time: %d\n", handler[shortest_idx].id, start_time, end_time + p[shortest_idx].burst, handler[shortest_idx].wait);
       	isDone = 1;
       }
 
       time++;
     }
-
+    for(i = 0; i < handler_idx; i++)
+      ave+=handler[i].wait;    
+    
     printf("Average Wait Time: %.1f\n", ave/num);
 }
 
@@ -108,9 +106,11 @@ void RoundRobin(int num, int q, Process p[]){
     int i, hasExecuted = 0;
     int q_check = 0;
     int time = 0;
+    int start_time = 0;
     int isDone = 0;
     int handler_idx = 0;
     int curr_idx = 0;
+    int ave = 0;
     Process *handler = malloc(num * sizeof(*handler));
 
     while(!isDone) {
@@ -121,35 +121,33 @@ void RoundRobin(int num, int q, Process p[]){
           {
             handler[handler_idx] = p[i];
             handler_idx++;
+
+            if(handler_idx == 1)
+              start_time = time;
           }
       
       if(handler_idx - hasExecuted) 
       { 
         // check burst of curr_idx
-        while(handler[curr_idx].burst == SENTINEL) {
-          printf("curr_idx: %d burst: %d\n", curr_idx, handler[curr_idx].burst);
+        while(handler[curr_idx].burst == SENTINEL)
           Traverse(&curr_idx, &handler_idx, &q_check);
-        }
-          
-          
+        
         // decrement burst
         if(q_check < q) {
 
           handler[curr_idx].burst--;
-          printf("pid: %d burst: %d\n", handler[curr_idx].id, handler[curr_idx].burst);
-          HandleZero(&handler[curr_idx], &hasExecuted);
+          HandleZero(&handler[curr_idx], &hasExecuted, &start_time, time);
 
         } else if(q_check == q) {
+          printf("P[%d] Start Time: %d End time: %d\n", handler[curr_idx].id, start_time, time);
           Traverse(&curr_idx, &handler_idx, &q_check);
 
-          while(handler[curr_idx].burst == SENTINEL) {
-            printf("2: curr_idx: %d burst: %d\n", curr_idx, handler[curr_idx].burst);
+          while(handler[curr_idx].burst == SENTINEL) 
             Traverse(&curr_idx, &handler_idx, &q_check);
-          }
-
+          
+          start_time = time;
           handler[curr_idx].burst--;
-          printf("pid: %d burst: %d\n", handler[curr_idx].id, handler[curr_idx].burst);
-          HandleZero(&handler[curr_idx], &hasExecuted);
+          HandleZero(&handler[curr_idx], &hasExecuted, &start_time, time);
         } 
         
         // inc q_check
@@ -166,6 +164,11 @@ void RoundRobin(int num, int q, Process p[]){
 
       time++;
     }
+
+    for(i = 0; i < handler_idx; i++)
+      ave+=handler[i].wait;    
+    
+    printf("Average Wait Time: %.1f\n", ave/num);
 }
 
 void SortBurst(Process p[], int num){
@@ -201,11 +204,13 @@ void Traverse(int* curr_idx, int* handler_idx, int* q_check) {
   *q_check = 0;
 }
 
-void HandleZero(Process *p, int* hasExecuted) {
+void HandleZero(Process *p, int* hasExecuted, int* start_time, int time) {
   const int SENTINEL = 999;
   
   if((*p).burst == 0) {
     (*p).burst = SENTINEL;
     *hasExecuted+= 1;
+    printf("P[%d] Start Time: %d End time: %d | Accumulated Waiting time: %d\n", (*p).id, *start_time, time + 1, (*p).wait);
+    *start_time = time + 1;
   }
 }
