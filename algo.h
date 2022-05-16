@@ -20,8 +20,6 @@ void SortBurst(Process[], int);
 
 void SortArrival(Process[], int);
 
-void Swap(Process*, Process*);
-
 void HandleZero(Process*, int*, int*, int);
 
 void Traverse(int*, int*, int*);

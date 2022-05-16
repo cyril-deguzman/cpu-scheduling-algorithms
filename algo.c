@@ -162,27 +162,29 @@ void RoundRobin(int num, int q, Process p[]){
 }
 
 void SortBurst(Process p[], int num){
-    int i, j;
+  int i, j;
 
-    for(i = 0; i < num; i++)
-      for(j = i+1; j < num; j++) 
-        if(p[i].burst > p[j].burst)
-          Swap(&p[i], &p[j]); 
+  for (j = 0; j < num - 1; ++j) 
+    for (i = 0; i < num - j - 1; ++i) 
+      if (p[i].burst > p[i + 1].burst) 
+      {
+        Process temp = p[i];
+        p[i] = p[i + 1];
+        p[i + 1] = temp;
+      }
 }
 
 void SortArrival(Process p[], int num){
-    int i, j;
+  int i, j;
 
-    for(i = 0; i < num; i++)
-      for(j = i+1; j < num; j++) 
-        if(p[i].arrival > p[j].arrival)
-          Swap(&p[i], &p[j]); 
-}
-
-void Swap(Process *x, Process *y) {
-    Process temp = *x;
-    *x = *y;
-    *y = temp;
+  for (j = 0; j < num - 1; ++j) 
+    for (i = 0; i < num - j - 1; ++i) 
+      if (p[i].arrival > p[i + 1].arrival) 
+      {
+        Process temp = p[i];
+        p[i] = p[i + 1];
+        p[i + 1] = temp;
+      }
 }
 
 void Traverse(int* curr_idx, int* handler_idx, int* q_check) {
